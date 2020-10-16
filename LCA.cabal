@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3d25823e5e45ca7c2c32dc2f00bedbb03d6a8821ed2ee10118da17dc3ae2ab64
+-- hash: caaff361d7f5d89ea3cdef46587b18a94d2ddc0094a8535e8b125d095e7f8c8f
 
 name:           LCA
 version:        0.1.0.0
@@ -33,7 +33,8 @@ library
   hs-source-dirs:
       src
   build-depends:
-      base >=4.7 && <5
+      HUnit
+    , base >=4.7 && <5
   default-language: Haskell2010
 
 executable LCA-exe
@@ -44,7 +45,8 @@ executable LCA-exe
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      LCA
+      HUnit
+    , LCA
     , base >=4.7 && <5
   default-language: Haskell2010
 
@@ -57,6 +59,7 @@ test-suite LCA-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      LCA
+      HUnit
+    , LCA
     , base >=4.7 && <5
   default-language: Haskell2010

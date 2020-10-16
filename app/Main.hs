@@ -2,5 +2,4 @@ module Main where
 
 import BinaryTree
 
-main :: IO ()
-main = someFunc
+main = putStrLn "Binary Tree implementation with LowestCommonAncestor function."
