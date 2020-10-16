@@ -26,4 +26,7 @@ treeHeight (Node a left right) = maximum [1, lh, rh]
 makeTree :: (Ord a) =>  [a] -> Tree a
 makeTree = foldr treeInsert EmptyTree . reverse
 
-
+lca :: Ord a => a -> a -> Tree a -> a
+lca m n ~(Node v l r) | n < v     = lca m n l
+                      | m > v     = lca m n r
+                      | otherwise = v
