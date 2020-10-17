@@ -57,3 +57,5 @@ testTreeHeightThree       = TestCase (3   @=? treeHeight treeSizeFour)
 --Test makeTree
 testMakeTreeOne         = TestCase (treeSizeOne     @=? makeTree [initialValue])
 testMakeTreeLarge       = TestCase (treeSizeFour    @=? makeTree [initialValue, lesserValue, greaterValue, smallestValue])
+
+--Test LCA
