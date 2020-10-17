@@ -14,6 +14,9 @@ initialValue        = 10 :: Int
 lesserValue         = 5  :: Int
 greaterValue        = 15 :: Int
 smallestValue       = 1  :: Int
+smallValue          = 6  :: Int
+bigValue            = 12 :: Int
+largestValue        = 25 :: Int
 treeSizeOne         = Node initialValue EmptyTree EmptyTree
 treeSizeTwo         = Node initialValue (Node lesserValue EmptyTree EmptyTree) EmptyTree
 treeSizeThree       = Node initialValue (Node lesserValue EmptyTree EmptyTree) 
@@ -59,3 +62,6 @@ testMakeTreeOne         = TestCase (treeSizeOne     @=? makeTree [initialValue])
 testMakeTreeLarge       = TestCase (treeSizeFour    @=? makeTree [initialValue, lesserValue, greaterValue, smallestValue])
 
 --Test LCA
+testLCARoot             = TestCase (initialValue    @=? lca lesserValue greaterValue treeSizeThree)
+testLCALeft             = TestCase (lesserValue     @=? lca smallestValue smallValue (makeTree [initialValue, lesserValue, smallestValue, smallValue]))
+testLCARight            = TestCase (greaterValue    @=? lca bigValue largestValue (makeTree [initialValue, greaterValue, bigValue, largestValue]))
