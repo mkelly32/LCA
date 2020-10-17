@@ -35,9 +35,12 @@ tests = TestList [
         TestLabel "testTreeElemFalse"       testTreeElemFalse,
         TestLabel "testTreeHeightEmpty"     testTreeHeightEmpty,
         TestLabel "testTreeHeightOne"       testTreeHeightOne,
-        TestLabel "testTreeHeightThree"       testTreeHeightThree,
+        TestLabel "testTreeHeightThree"     testTreeHeightThree,
         TestLabel "testMakeTreeOne"         testMakeTreeOne,
-        TestLabel "testMakeTreeLarge"       testMakeTreeLarge
+        TestLabel "testMakeTreeLarge"       testMakeTreeLarge,
+        TestLabel "testLCARoot"             testLCARoot,
+        TestLabel "testLCALeft"             testLCALeft,
+        TestLabel "testLCARight"            testLCARight
     ]
 
 --Test treeInsert
