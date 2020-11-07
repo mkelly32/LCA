@@ -1,5 +1,5 @@
 module Main where
 
-import BinaryTree
+import DAG
 
-main = putStrLn "Binary Tree implementation with LowestCommonAncestor function."
+main = putStrLn "Directed Acyclic Graph with LowestCommonAncestor function."

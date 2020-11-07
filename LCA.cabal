@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: caaff361d7f5d89ea3cdef46587b18a94d2ddc0094a8535e8b125d095e7f8c8f
+-- hash: b971a49ec2bf76b48bd38915fa0bc66940e43862fcb8b410aae86fc1ee098947
 
 name:           LCA
 version:        0.1.0.0
@@ -27,7 +27,7 @@ source-repository head
 
 library
   exposed-modules:
-      BinaryTree
+      DAG
   other-modules:
       Paths_LCA
   hs-source-dirs:
