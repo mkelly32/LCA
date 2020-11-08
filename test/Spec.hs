@@ -2,7 +2,7 @@ module Main where
 
 import Test.HUnit
 
-import BinaryTree
+import DAG
 
 main :: IO ()
 main = do
@@ -17,54 +17,20 @@ smallestValue       = 1  :: Int
 smallValue          = 6  :: Int
 bigValue            = 12 :: Int
 largestValue        = 25 :: Int
-treeSizeOne         = Node initialValue EmptyTree EmptyTree
-treeSizeTwo         = Node initialValue (Node lesserValue EmptyTree EmptyTree) EmptyTree
-treeSizeThree       = Node initialValue (Node lesserValue EmptyTree EmptyTree) 
-    (Node greaterValue EmptyTree EmptyTree)
-treeSizeFour        = Node initialValue (Node lesserValue 
-    (Node smallestValue EmptyTree EmptyTree) EmptyTree) (Node greaterValue EmptyTree EmptyTree)
+
+emptyGraph          = []
+graphSizeOne        = [Vertex (initialValue, [])]
+graphSizeTwo        = (Vertex (initialValue, [greaterValue])): [Vertex (greaterValue, [])]
+graphSizeThree      = (Vertex (lesserValue, [greaterValue])) : (Vertex (initialValue, [greaterValue])) : [(Vertex (greaterValue, []))]
 
 tests = TestList [   
-        TestLabel "testTreeInsertEmpty"     testTreeInsertEmpty,
-        TestLabel "testTreeInsertLesser"    testTreeInsertLesser,
-        TestLabel "testTreeInsertGreater"   testTreeInsertGreater,
-        TestLabel "testTreeInsertSubTree"   testTreeInsertSubTree,
-        TestLabel "testTreeElemEmpty"       testTreeElemEmpty,
-        TestLabel "testTreeElemLeft"        testTreeElemLeft,
-        TestLabel "testTreeElemRight"       testTreeElemRight,
-        TestLabel "testTreeElemFalse"       testTreeElemFalse,
-        TestLabel "testTreeHeightEmpty"     testTreeHeightEmpty,
-        TestLabel "testTreeHeightOne"       testTreeHeightOne,
-        TestLabel "testTreeHeightThree"     testTreeHeightThree,
-        TestLabel "testMakeTreeOne"         testMakeTreeOne,
-        TestLabel "testMakeTreeLarge"       testMakeTreeLarge,
-        TestLabel "testLCARoot"             testLCARoot,
-        TestLabel "testLCALeft"             testLCALeft,
-        TestLabel "testLCARight"            testLCARight
+        TestLabel   "testInsertEmpty"               testInsertEmpty,
+        TestLabel   "testInsertGraphSizeOne"        testInsertGraphSizeOne,
+        TestLabel   "testInsertGraphSizeTwo"        testInsertGraphSizeTwo  
     ]
 
---Test treeInsert
-testTreeInsertEmpty     = TestCase (treeSizeOne     @=? treeInsert initialValue EmptyTree)
-testTreeInsertLesser    = TestCase (treeSizeTwo     @=? treeInsert lesserValue treeSizeOne)
-testTreeInsertGreater   = TestCase (treeSizeThree   @=? treeInsert greaterValue treeSizeTwo)
-testTreeInsertSubTree   = TestCase (treeSizeFour    @=? treeInsert smallestValue treeSizeThree)
-
---Test treeElem
-testTreeElemEmpty       = TestCase (False   @=? treeElem initialValue EmptyTree)
-testTreeElemLeft        = TestCase (True    @=? treeElem lesserValue treeSizeThree)
-testTreeElemRight       = TestCase (True    @=? treeElem greaterValue treeSizeThree)
-testTreeElemFalse       = TestCase (False   @=? treeElem smallestValue treeSizeThree)
-
---Test treeHeight
-testTreeHeightEmpty     = TestCase (0   @=? treeHeight EmptyTree)
-testTreeHeightOne       = TestCase (1   @=? treeHeight treeSizeOne)
-testTreeHeightThree       = TestCase (3   @=? treeHeight treeSizeFour)
-
---Test makeTree
-testMakeTreeOne         = TestCase (treeSizeOne     @=? makeTree [initialValue])
-testMakeTreeLarge       = TestCase (treeSizeFour    @=? makeTree [initialValue, lesserValue, greaterValue, smallestValue])
-
---Test LCA
-testLCARoot             = TestCase (initialValue    @=? lca lesserValue greaterValue treeSizeThree)
-testLCALeft             = TestCase (lesserValue     @=? lca smallestValue smallValue (makeTree [initialValue, lesserValue, smallestValue, smallValue]))
-testLCARight            = TestCase (greaterValue    @=? lca bigValue largestValue (makeTree [initialValue, greaterValue, bigValue, largestValue]))
+testInsertEmpty             = TestCase (graphSizeOne    @=? (insert emptyGraph initialValue [] []))
+--- tests that the new node will be referenced by preceding nodes with an edge to it
+testInsertGraphSizeOne      = TestCase (graphSizeTwo    @=? (insert graphSizeOne greaterValue [initialValue] []))
+--- tests that this node will reference succeding nodes that it has an edge to
+testInsertGraphSizeTwo      = TestCase (graphSizeThree  @=? (insert graphSizeTwo lesserValue [] [greaterValue]))
