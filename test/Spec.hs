@@ -19,9 +19,9 @@ bigValue            = 12 :: Int
 largestValue        = 25 :: Int
 
 emptyGraph          = []
-graphSizeOne        = [Vertex (initialValue, [])]
-graphSizeTwo        = (Vertex (initialValue, [greaterValue])): [Vertex (greaterValue, [])]
-graphSizeThree      = (Vertex (lesserValue, [greaterValue])) : (Vertex (initialValue, [greaterValue])) : [(Vertex (greaterValue, []))]
+graphSizeOne        = [Vertex (initialValue, [], [])]
+graphSizeTwo        = (Vertex (initialValue, [], [greaterValue])): [Vertex (greaterValue, [initialValue], [])]
+graphSizeThree      = (Vertex (lesserValue, [], [greaterValue])) : (Vertex (initialValue, [], [greaterValue])) : [(Vertex (greaterValue, [lesserValue, initialValue], []))]
 
 tests = TestList [   
         TestLabel   "testInsertEmpty"               testInsertEmpty,
@@ -31,6 +31,6 @@ tests = TestList [
 
 testInsertEmpty             = TestCase (graphSizeOne    @=? (insert emptyGraph initialValue [] []))
 --- tests that the new node will be referenced by preceding nodes with an edge to it
-testInsertGraphSizeOne      = TestCase (graphSizeTwo    @=? (insert graphSizeOne greaterValue [initialValue] []))
+testInsertGraphSizeOne      = TestCase (graphSizeTwo  @=? (insert graphSizeOne greaterValue [initialValue] []))
 --- tests that this node will reference succeding nodes that it has an edge to
 testInsertGraphSizeTwo      = TestCase (graphSizeThree  @=? (insert graphSizeTwo lesserValue [] [greaterValue]))
