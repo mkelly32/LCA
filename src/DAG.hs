@@ -1,4 +1,5 @@
 module DAG where
+import Data.List
 
 newtype Vertex a = Vertex (a, [a], [a]) deriving (Eq, Show)
 type Graph a = [Vertex a]
@@ -34,8 +35,18 @@ graphElem x ((Vertex (vertex, _, _)):vertices)
 
 lowestCommonAncestor :: Ord a => Graph a -> Vertex a -> Vertex a -> a
 lowestCommonAncestor [] _ _ = error "empty graph"
-lowestCommonAncestor graph (Vertex (a, toA, fromA)) (Vertex (b, toB, fromB)) = a
-   --- (map (distanceToAncestor graph (Vertex (a, aEdges)) 1) graph) (map (distanceToAncestor graph (Vertex (b, bEdges)) 1) graph)
+lowestCommonAncestor graph a b = let
+    aAncestors = getAncestors graph 1 [a]
+    bAncestors = getAncestors graph 1 [b] in
+    lowestCostSharedAncestor (sortBy sortTuples (keepCommonAncestors aAncestors bAncestors)) (sortBy sortTuples (keepCommonAncestors bAncestors aAncestors)) (head (keepCommonAncestors aAncestors bAncestors))
+
+
+---Takes a single vertex in a list as its initial parameter (its wrapped in a list to aid with recursion) and returns a list of tuples, in which each tuple has a value of a vertex, and its distance from the inital vertex
+getAncestors :: Ord a => Graph a -> Int -> [Vertex a] -> [(a, Int)]
+getAncestors _ _ []             = []
+getAncestors graph accumulator ((Vertex (_, connectedFrom, _)):vertices)
+    | connectedFrom == []       = makePairs connectedFrom accumulator
+    | otherwise                 = removeDuplicates ((makePairs connectedFrom accumulator) ++ getAncestors graph (accumulator+1) (map (getVertex graph) connectedFrom) ++ getAncestors graph accumulator vertices)
 
 getVertex :: Ord a => Graph a -> a -> Vertex a
 getVertex ((Vertex (vertex, edgesFrom, edgesTo)):vertices) x
@@ -47,3 +58,33 @@ isNonZero :: Int -> Bool
 isNonZero x
     | x > 0             = True
     | otherwise         = False
+
+removeDuplicates :: Ord a => [(a, Int)] -> [(a, Int)]
+removeDuplicates [] = []
+removeDuplicates (x:xs)
+    | elem x xs = removeDuplicates xs
+    | otherwise = x : removeDuplicates xs
+
+makePairs :: Ord a => [a] -> Int -> [(a, Int)]
+makePairs [] _          = []
+makePairs (x:xs) cost   = (x, cost) : (makePairs xs cost)
+
+keepCommonAncestors :: Ord a => [(a, Int)] -> [(a, Int)] -> [(a, Int)]
+keepCommonAncestors [] _            = []
+keepCommonAncestors ((aValue, aCost):as) b
+    | lookup aValue b == Nothing    = keepCommonAncestors as b
+    | otherwise                     = (aValue, aCost) : (keepCommonAncestors as b)
+
+---This function assumes it is given two lists of the same length, sorted with the values in order. Each list has a differnt cost  for the same value though. Returns the value with the lowest cost (of the maximum of each value)
+lowestCostSharedAncestor :: Ord a => [(a, Int)] -> [(a, Int)] -> (a, Int) -> a
+lowestCostSharedAncestor [] _ (candidateValue, _)     = candidateValue
+lowestCostSharedAncestor ((aValue, aCost):as) ((_, bCost):bs) (candidateValue, candidateCost)
+    | max aCost bCost < candidateCost       = lowestCostSharedAncestor as bs (aValue, (max aCost bCost))
+    | otherwise                             = lowestCostSharedAncestor as bs (candidateValue, candidateCost)
+
+sortTuples :: Ord a => (a, Int) -> (a, Int) -> Ordering
+sortTuples (aValue, _) (bValue, _)
+    | aValue < bValue       = LT
+    | aValue == bValue      = EQ
+    | otherwise             = GT
+
